@@ -1,0 +1,49 @@
+#
+
+# Set compilers
+FC=mpif90
+F77=$FC
+#F77=mpif77
+
+# Linking flags
+LINKFLAGS = -L$(MKLROOT)/lib/intel64 $(MKLROOT)/lib/intel64/libmkl_blas95_lp64.a $(MKLROOT)/lib/intel64/libmkl_lapack95_lp64.a -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lmkl_blacs_openmpi_lp64 -lpthread -lm -qopenmp
+#LINKFLAGS= -L${MKLROOT}/lib/intel64 -lmkl_scalapack_lp64 -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_lp64 -liomp5 -lpthread -lm -ldl
+#LINKFLAGS= -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -liomp5 -lpthread -lm -ldl
+ARFLAGS=
+
+# Compilation flags
+COMPFLAGS= -O3 -mkl=parallel -xSSE4.2 -fp-model strict $(XC_COMPFLAGS) -I"${MKLROOT}/include"
+COMPFLAGS_F77= $(COMPFLAGS)
+
+# Set BLAS and LAPACK libraries
+#BLAS= -lvecLibFort
+
+# Full library call; remove scalapack if using dummy diag module
+#LIBS= $(FFT_LIB) $(XC_LIB) -lscalapack $(BLAS)
+LIBS= $(FFT_LIB) $(XC_LIB) 
+
+# LibXC compatibility (LibXC below) or Conquest XC library
+
+# Conquest XC library
+XC_LIBRARY = CQ
+XC_LIB =
+XC_COMPFLAGS =
+
+# LibXC compatibility
+# Choose old LibXC (v2.x) or modern versions
+##XC_LIBRARY = LibXC_v2
+#XC_LIBRARY = LibXC
+#XC_LIB = -L/home/ayakon/org-source/libxc-5.0.0/lib -lxcf90 -lxc
+#XC_COMPFLAGS = -I/home/ayakon/org-source/libxc-5.0.0/include
+
+# Set FFT library
+FFT_LIB= -I/opt/intel/compilers_and_libraries_2020.0.166/linux/mkl/include/fftw -lfftw3 -lfftw3_omp
+FFT_OBJ=fft_fftw3.o
+
+# Matrix multiplication kernel type
+MULT_KERN = default
+# Use dummy DiagModule or not
+DIAG_DUMMY =
+
+
+
